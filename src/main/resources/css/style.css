@@ -1,0 +1,11 @@
+.background {
+  -fx-background-color: black
+}
+
+.alive-cell {
+  -fx-background-color: white;
+}
+
+.dead-cell {
+  -fx-background-color: black;
+}
