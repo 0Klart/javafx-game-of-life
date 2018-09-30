@@ -5,6 +5,7 @@ import com.scully.models.Cell;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,33 +37,30 @@ public class MainController implements Initializable {
   public void initialize(URL location, ResourceBundle resources) {
     canvas.setHeight(Main.STAGE_HEIGHT);
     canvas.setWidth(Main.STAGE_WIDTH);
-    rows = new int[(int) canvas.getHeight() / Cell.getHeight()];
-    columns = new int[(int) canvas.getWidth() / Cell.getWidth()];
-
+    rows = new int[(int) canvas.getHeight()];
+    columns = new int[(int) canvas.getWidth()];
 
     log.info("rows : {}", rows.length);
     log.info("columns : {}", columns.length);
 
     // Cell creating loop
-    cells = new ArrayList<>();
-    for (int i = 0; i < rows.length; i++) {
+    createCells();
+    log.info("cells : {}", cells.size());
 
-      for (int j = 0; j < columns.length; j++) {
+  }
+
+  private void createCells() {
+    cells = new ArrayList<>();
+    for (int i = 0; i < rows.length; i = i + Cell.getHeight()) {
+      for (int j = 0; j < columns.length; j = j + Cell.getWidth()) {
         Cell cell = new Cell();
         cell.setXPosition(i);
         cell.setYPosition(j);
+        cell.setGraphicsContext(canvas.getGraphicsContext2D());
         cells.add(cell);
       }
     }
 
-    GraphicsContext graphicsContext2D = canvas.getGraphicsContext2D();
-    cells.forEach(cell -> {
-      log.info("X: {} | Y: {}", cell.getXPosition(), cell.getYPosition());
-      graphicsContext2D.setFill(Color.WHITE);
-      graphicsContext2D.fillRect(cell.getXPosition(), cell.getYPosition(), Cell.getWidth(), Cell.getHeight());
-
-    });
-
-
+    cells.forEach(cell -> cell.setAlive(Math.random() < 0.5));
   }
 }

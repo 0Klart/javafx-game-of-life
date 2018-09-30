@@ -1,12 +1,16 @@
 package com.scully.models;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 public class Cell {
 
-  private static final int width = 2;
-  private static final int height = 2;
+  private static final int WIDTH = 5;
+  private static final int HEIGHT = 5;
 
   private int xPosition;
   private int yPosition;
+  private GraphicsContext graphicsContext;
 
   private boolean isAlive = false;
 
@@ -27,11 +31,11 @@ public class Cell {
   }
 
   public static int getWidth() {
-    return width;
+    return WIDTH;
   }
 
   public static int getHeight() {
-    return height;
+    return HEIGHT;
   }
 
   public boolean isAlive() {
@@ -40,5 +44,15 @@ public class Cell {
 
   public void setAlive(boolean alive) {
     isAlive = alive;
+    if (alive){
+      graphicsContext.setFill(Color.WHITE);
+    } else {
+      graphicsContext.setFill(Color.BLACK);
+    }
+    graphicsContext.fillRect(this.getXPosition(), this.getYPosition(), WIDTH, HEIGHT);
+  }
+
+  public void setGraphicsContext(GraphicsContext graphicsContext) {
+    this.graphicsContext = graphicsContext;
   }
 }
