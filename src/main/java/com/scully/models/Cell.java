@@ -42,7 +42,7 @@ public class Cell {
     return isAlive;
   }
 
-  public void setAlive(boolean alive) {
+  public Cell setAlive(boolean alive) {
     isAlive = alive;
     if (alive){
       graphicsContext.setFill(Color.WHITE);
@@ -50,6 +50,7 @@ public class Cell {
       graphicsContext.setFill(Color.BLACK);
     }
     graphicsContext.fillRect(this.getXPosition(), this.getYPosition(), WIDTH, HEIGHT);
+    return this;
   }
 
   public void setGraphicsContext(GraphicsContext graphicsContext) {

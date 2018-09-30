@@ -5,13 +5,12 @@ import com.scully.models.Cell;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -47,6 +46,28 @@ public class MainController implements Initializable {
     createCells();
     log.info("cells : {}", cells.size());
 
+    Task task = new Task() {
+      @Override
+      protected Object call() throws Exception {
+        runGameOfLifeLoop();
+        return null;
+      }
+    };
+    new Thread(task).start();
+
+  }
+
+  private void runGameOfLifeLoop() {
+    int loopCounter = 0;
+    while (loopCounter < 1000000000) {
+      try {
+        Thread.sleep(1_000);
+        cells.forEach(cell -> cell.setAlive(Math.random() < 0.5));
+        loopCounter++;
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   private void createCells() {
