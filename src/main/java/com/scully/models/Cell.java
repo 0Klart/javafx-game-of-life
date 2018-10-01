@@ -2,10 +2,11 @@ package com.scully.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Cell {
 
   private static final int WIDTH = 5;
@@ -20,15 +21,83 @@ public class Cell {
   private List<Cell> neighbours = new ArrayList<>();
 
   public Cell() {
+
   }
 
-  public Cell(int xPosition, int yPosition, GraphicsContext graphicsContext,
-      List<Cell> neighbours, boolean isAlive) {
+  public Cell(int xPosition, int yPosition, GraphicsContext graphicsContext) {
     this.xPosition = xPosition;
     this.yPosition = yPosition;
     this.graphicsContext = graphicsContext;
-    this.neighbours = neighbours;
-    this.isAlive = isAlive;
+  }
+
+  public void setNeighbours() {
+    // North neighbours
+    if (this.canHaveNorthNeighbours()) {
+      // North
+      Cell northNeighbour = new Cell();
+      northNeighbour.setXPosition(xPosition);
+      northNeighbour.setYPosition(yPosition - 1);
+      log.info("Adding north neighbour");
+      this.addNeighbour(northNeighbour);
+
+      // North west
+      if (this.canHaveWestNeighbours()) {
+        Cell northWestNeighbour = new Cell();
+        northWestNeighbour.setXPosition(xPosition - 1);
+        northWestNeighbour.setYPosition(yPosition - 1);
+        log.info("Adding north-west neighbour");
+        this.addNeighbour(northWestNeighbour);
+      }
+      // North east
+      if (this.canHaveEastNeighbours()) {
+        Cell northEastNeighbour = new Cell();
+        northEastNeighbour.setXPosition(xPosition + 1);
+        northEastNeighbour.setYPosition(yPosition - 1);
+        log.info("Adding north-east neighbour");
+        this.addNeighbour(northEastNeighbour);
+      }
+    }
+    // West neighbours
+    if (this.canHaveWestNeighbours()) {
+      Cell west = new Cell();
+      west.setXPosition(xPosition - 1);
+      west.setYPosition(yPosition);
+      log.info("Adding west neighbour");
+      this.addNeighbour(west);
+    }
+    // East neighbours
+    if (this.canHaveEastNeighbours()) {
+      Cell east = new Cell();
+      east.setXPosition(xPosition + 1);
+      east.setYPosition(yPosition);
+      log.info("Adding east neighbour");
+      this.addNeighbour(east);
+    }
+    // South neighbours
+    if (this.canHaveSouthNeighbours()) {
+      // South
+      Cell southNeighbour = new Cell();
+      southNeighbour.setXPosition(xPosition);
+      southNeighbour.setYPosition(yPosition + 1);
+      log.info("Adding south neighbour");
+      this.addNeighbour(southNeighbour);
+      // South west
+      if (this.canHaveWestNeighbours()) {
+        Cell southWestNeighbour = new Cell();
+        southWestNeighbour.setXPosition(xPosition - 1);
+        southWestNeighbour.setYPosition(yPosition + 1);
+        log.info("Adding south-west neighbour");
+        this.addNeighbour(southWestNeighbour);
+      }
+      // South east
+      if (this.canHaveEastNeighbours()) {
+        Cell southEastNeighbour = new Cell();
+        southEastNeighbour.setXPosition(xPosition + 1);
+        southEastNeighbour.setYPosition(yPosition + 1);
+        log.info("Adding south-east neighbour");
+        this.addNeighbour(southEastNeighbour);
+      }
+    }
   }
 
   private boolean isAlive = false;
@@ -63,12 +132,12 @@ public class Cell {
 
   public Cell setAlive(boolean alive) {
     isAlive = alive;
-    if (alive) {
+    graphicsContext.fillRect(this.getXPosition(), this.getYPosition(), WIDTH, HEIGHT);
+    if (isAlive) {
       graphicsContext.setFill(Color.WHITE);
     } else {
       graphicsContext.setFill(Color.BLACK);
     }
-    graphicsContext.fillRect(this.getXPosition(), this.getYPosition(), WIDTH, HEIGHT);
     return this;
   }
 
@@ -80,23 +149,23 @@ public class Cell {
     this.neighbours.add(neighbour);
   }
 
-  // TODO
-  public boolean canHaveNorthNeighbours(Canvas canvas) {
+  public boolean canHaveNorthNeighbours() {
     return this.yPosition > HEIGHT;
   }
 
-  // TODO
-  public boolean canHaveSouthNeighbours(Canvas canvas) {
-    return this.yPosition + HEIGHT < canvas.getHeight();
+  public boolean canHaveSouthNeighbours() {
+    return this.yPosition + HEIGHT < graphicsContext.getCanvas().getHeight();
   }
 
-  // TODO
-  public boolean canHaveWestNeighbours(Canvas canvas) {
+  public boolean canHaveWestNeighbours() {
     return this.xPosition > WIDTH;
   }
 
-  // TODO
-  public boolean canHaveEastNeighbours(Canvas canvas) {
-    return this.xPosition < canvas.getWidth();
+  public boolean canHaveEastNeighbours() {
+    return this.xPosition + WIDTH < graphicsContext.getCanvas().getWidth();
+  }
+
+  public List<Cell> getNeighbours() {
+    return neighbours;
   }
 }
